@@ -1,0 +1,14 @@
+/Users/mueedhussain/Desktop/Personal/Side projects/TelemetrySystem/TelemetryServer/bin/Debug/net8.0/TelemetryServer
+/Users/mueedhussain/Desktop/Personal/Side projects/TelemetrySystem/TelemetryServer/bin/Debug/net8.0/TelemetryServer.deps.json
+/Users/mueedhussain/Desktop/Personal/Side projects/TelemetrySystem/TelemetryServer/bin/Debug/net8.0/TelemetryServer.runtimeconfig.json
+/Users/mueedhussain/Desktop/Personal/Side projects/TelemetrySystem/TelemetryServer/bin/Debug/net8.0/TelemetryServer.dll
+/Users/mueedhussain/Desktop/Personal/Side projects/TelemetrySystem/TelemetryServer/bin/Debug/net8.0/TelemetryServer.pdb
+/Users/mueedhussain/Desktop/Personal/Side projects/TelemetrySystem/TelemetryServer/obj/Debug/net8.0/TelemetryServer.GeneratedMSBuildEditorConfig.editorconfig
+/Users/mueedhussain/Desktop/Personal/Side projects/TelemetrySystem/TelemetryServer/obj/Debug/net8.0/TelemetryServer.AssemblyInfoInputs.cache
+/Users/mueedhussain/Desktop/Personal/Side projects/TelemetrySystem/TelemetryServer/obj/Debug/net8.0/TelemetryServer.AssemblyInfo.cs
+/Users/mueedhussain/Desktop/Personal/Side projects/TelemetrySystem/TelemetryServer/obj/Debug/net8.0/TelemetryServer.csproj.CoreCompileInputs.cache
+/Users/mueedhussain/Desktop/Personal/Side projects/TelemetrySystem/TelemetryServer/obj/Debug/net8.0/TelemetryServer.dll
+/Users/mueedhussain/Desktop/Personal/Side projects/TelemetrySystem/TelemetryServer/obj/Debug/net8.0/refint/TelemetryServer.dll
+/Users/mueedhussain/Desktop/Personal/Side projects/TelemetrySystem/TelemetryServer/obj/Debug/net8.0/TelemetryServer.pdb
+/Users/mueedhussain/Desktop/Personal/Side projects/TelemetrySystem/TelemetryServer/obj/Debug/net8.0/TelemetryServer.genruntimeconfig.cache
+/Users/mueedhussain/Desktop/Personal/Side projects/TelemetrySystem/TelemetryServer/obj/Debug/net8.0/ref/TelemetryServer.dll
