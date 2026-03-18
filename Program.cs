@@ -1,2 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using TelemetryServer;
+
+var server = new TcpServer(port: 9000);
+await server.StartAsync();

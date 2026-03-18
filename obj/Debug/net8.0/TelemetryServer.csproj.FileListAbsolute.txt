@@ -12,3 +12,4 @@
 /Users/mueedhussain/Desktop/Personal/Side projects/TelemetrySystem/TelemetryServer/obj/Debug/net8.0/TelemetryServer.pdb
 /Users/mueedhussain/Desktop/Personal/Side projects/TelemetrySystem/TelemetryServer/obj/Debug/net8.0/TelemetryServer.genruntimeconfig.cache
 /Users/mueedhussain/Desktop/Personal/Side projects/TelemetrySystem/TelemetryServer/obj/Debug/net8.0/ref/TelemetryServer.dll
+/Users/mueedhussain/Desktop/Personal/Side projects/TelemetrySystem/TelemetryServer/obj/Debug/net8.0/TelemetryServer.sourcelink.json
