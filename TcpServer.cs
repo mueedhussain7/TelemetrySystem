@@ -8,42 +8,34 @@ namespace TelemetryServer;
 public class TcpServer
 {
     private readonly int _port;
+    private readonly TelemetryRepository _repository;  // NEW
     private TcpListener? _listener;
-
-    // Tracks how many devices are currently connected
     private int _connectedCount = 0;
 
-    public TcpServer(int port)
+    public TcpServer(int port, TelemetryRepository repository)  // NEW
     {
         _port = port;
+        _repository = repository;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken = default)
     {
         _listener = new TcpListener(IPAddress.Any, _port);
         _listener.Start();
-
         Console.WriteLine($"Server listening on port {_port}...");
 
-        // Loop forever — keep accepting new devices
         while (!cancellationToken.IsCancellationRequested)
         {
-            // Wait for next device to connect
             TcpClient client = await _listener.AcceptTcpClientAsync(cancellationToken);
-
-            // Give each device its OWN task — like assigning a doctor to each patient
-            // The _ means "fire and forget" — don't wait for it, just let it run
             _ = Task.Run(() => HandleClientAsync(client, cancellationToken));
         }
     }
 
     private async Task HandleClientAsync(TcpClient client, CancellationToken cancellationToken)
     {
-        // Count this new connection
         int count = Interlocked.Increment(ref _connectedCount);
         string clientAddress = client.Client.RemoteEndPoint?.ToString() ?? "unknown";
-
-        Console.WriteLine($"[+] Device connected: {clientAddress} | Total connected: {count}");
+        Console.WriteLine($"[+] Device connected: {clientAddress} | Total: {count}");
 
         try
         {
@@ -53,22 +45,27 @@ public class TcpServer
             while (!cancellationToken.IsCancellationRequested)
             {
                 int bytesRead = await stream.ReadAsync(buffer, cancellationToken);
-
-                if (bytesRead == 0) break; // device disconnected
+                if (bytesRead == 0) break;
 
                 string message = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
 
-                // Try to parse it as JSON, otherwise just print it raw
                 try
                 {
-                    var reading = JsonSerializer.Deserialize<TelemetryReading>(message);
-                    Console.WriteLine($"[DATA] Device: {reading?.DeviceId} | " +
-                                      $"Value: {reading?.Value} {reading?.Unit} | " +
-                                      $"Time: {reading?.Timestamp:HH:mm:ss}");
+                    var reading = JsonSerializer.Deserialize<TelemetryReading>(message,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    if (reading != null)
+                    {
+                        // Save to database
+                        await _repository.SaveReadingAsync(reading);
+
+                        Console.WriteLine($"[SAVED] {reading.DeviceId} | " +
+                                          $"{reading.Value} {reading.Unit} | " +
+                                          $"{reading.Timestamp:HH:mm:ss}");
+                    }
                 }
-                catch
+                catch (JsonException)
                 {
-                    // Not JSON yet — just print the raw message
                     Console.WriteLine($"[RAW] {clientAddress}: {message}");
                 }
             }
@@ -79,9 +76,8 @@ public class TcpServer
         }
         finally
         {
-            // Always clean up, even if something crashes
             int remaining = Interlocked.Decrement(ref _connectedCount);
-            Console.WriteLine($"[-] Device disconnected: {clientAddress} | Total connected: {remaining}");
+            Console.WriteLine($"[-] Disconnected: {clientAddress} | Total: {remaining}");
             client.Dispose();
         }
     }

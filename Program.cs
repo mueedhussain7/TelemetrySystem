@@ -8,16 +8,17 @@ Console.CancelKeyPress += (_, e) =>
     cts.Cancel();
 };
 
-// Start the server in the background
-var server = new TcpServer(port: 9000);
+// Connection string — tells Npgsql where to find PostgreSQL
+const string connectionString =
+    "Host=localhost; Database=telemetry_db; Username=mueedhussain; Password=";
+
+var repository = new TelemetryRepository(connectionString);
+var server     = new TcpServer(port: 9000, repository);
 var serverTask = server.StartAsync(cts.Token);
 
-// Give the server half a second to start before devices connect
 await Task.Delay(500);
 
-// Spin up 30 simulated devices — each runs independently
 Console.WriteLine("[SIM] Starting 30 simulated devices...");
-
 var simulators = Enumerable.Range(1, 30)
     .Select(i => new DeviceSimulator(i, "127.0.0.1", 9000))
     .ToList();
@@ -26,5 +27,5 @@ var simulatorTasks = simulators
     .Select(sim => sim.StartAsync(cts.Token))
     .ToList();
 
-// Wait for everything to finish (Ctrl+C triggers the shutdown)
 await Task.WhenAll([serverTask, ..simulatorTasks]);
+
