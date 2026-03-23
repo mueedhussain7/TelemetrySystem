@@ -2,17 +2,18 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
+using Serilog;
 
 namespace TelemetryServer;
 
 public class TcpServer
 {
     private readonly int _port;
-    private readonly TelemetryRepository _repository;  // NEW
+    private readonly TelemetryRepository _repository;
     private TcpListener? _listener;
     private int _connectedCount = 0;
 
-    public TcpServer(int port, TelemetryRepository repository)  // NEW
+    public TcpServer(int port, TelemetryRepository repository)
     {
         _port = port;
         _repository = repository;
@@ -22,20 +23,34 @@ public class TcpServer
     {
         _listener = new TcpListener(IPAddress.Any, _port);
         _listener.Start();
-        Console.WriteLine($"Server listening on port {_port}...");
 
-        while (!cancellationToken.IsCancellationRequested)
+        Log.Information("Server listening on port {Port}", _port);
+
+        try
         {
-            TcpClient client = await _listener.AcceptTcpClientAsync(cancellationToken);
-            _ = Task.Run(() => HandleClientAsync(client, cancellationToken));
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                TcpClient client = await _listener.AcceptTcpClientAsync(cancellationToken);
+                _ = Task.Run(() => HandleClientAsync(client, cancellationToken));
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Normal shutdown, not an error
+            Log.Information("Server stopped.");
+        }
+        finally
+        {
+            _listener.Stop();
         }
     }
-
     private async Task HandleClientAsync(TcpClient client, CancellationToken cancellationToken)
     {
         int count = Interlocked.Increment(ref _connectedCount);
         string clientAddress = client.Client.RemoteEndPoint?.ToString() ?? "unknown";
-        Console.WriteLine($"[+] Device connected: {clientAddress} | Total: {count}");
+
+        Log.Debug("Device connected: {Address} | Total connected: {Count}",
+            clientAddress, count);
 
         try
         {
@@ -56,28 +71,29 @@ public class TcpServer
 
                     if (reading != null)
                     {
-                        // Save to database
                         await _repository.SaveReadingAsync(reading);
 
-                        Console.WriteLine($"[SAVED] {reading.DeviceId} | " +
-                                          $"{reading.Value} {reading.Unit} | " +
-                                          $"{reading.Timestamp:HH:mm:ss}");
+                        Log.Information("Saved reading | Device: {DeviceId} | " +
+                                        "Value: {Value} {Unit}",
+                            reading.DeviceId, reading.Value, reading.Unit);
                     }
                 }
                 catch (JsonException)
                 {
-                    Console.WriteLine($"[RAW] {clientAddress}: {message}");
+                    Log.Warning("Could not parse message from {Address}: {Message}",
+                        clientAddress, message);
                 }
             }
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            Console.WriteLine($"[ERROR] {clientAddress}: {ex.Message}");
+            Log.Error(ex, "Unexpected error handling client {Address}", clientAddress);
         }
         finally
         {
             int remaining = Interlocked.Decrement(ref _connectedCount);
-            Console.WriteLine($"[-] Disconnected: {clientAddress} | Total: {remaining}");
+            Log.Debug("Device disconnected: {Address} | Total connected: {Remaining}",
+                clientAddress, remaining);
             client.Dispose();
         }
     }
