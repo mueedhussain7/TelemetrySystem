@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelemetryServer", "TelemetryServer\TelemetryServer.csproj", "{19349517-ED44-40E0-9079-4297A5BF4C3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelemetryServer.Tests", "TelemetryServer.Tests\TelemetryServer.Tests.csproj", "{49321901-685A-4ED5-9658-953C0A3DB757}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{19349517-ED44-40E0-9079-4297A5BF4C3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19349517-ED44-40E0-9079-4297A5BF4C3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19349517-ED44-40E0-9079-4297A5BF4C3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19349517-ED44-40E0-9079-4297A5BF4C3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49321901-685A-4ED5-9658-953C0A3DB757}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49321901-685A-4ED5-9658-953C0A3DB757}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49321901-685A-4ED5-9658-953C0A3DB757}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49321901-685A-4ED5-9658-953C0A3DB757}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
